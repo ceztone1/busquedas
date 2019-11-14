@@ -1,0 +1,217 @@
+<html>
+<head>
+<title>busqueda.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6897bb;}
+.s3 { color: #6a8759;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+busqueda.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">sample</span><span class="s0">;</span>
+
+import <span class="s1">javafx.scene.control.Alert</span><span class="s0">;</span>
+
+import <span class="s1">java.util.*</span><span class="s0">;</span>
+
+public class <span class="s1">busqueda {</span>
+
+    String[][] arbol<span class="s0">;</span>
+
+    void <span class="s1">profundidad(</span><span class="s0">int </span><span class="s1">raiz</span><span class="s0">, </span><span class="s1">String mat[][]) {</span>
+        ArrayList&lt;Integer&gt; visitados = <span class="s0">new </span><span class="s1">ArrayList&lt;&gt;()</span><span class="s0">;</span>
+        <span class="s1">arbol = </span><span class="s0">new </span><span class="s1">String[mat.length][mat.length]</span><span class="s0">;</span>
+        <span class="s1">iniciarArbol()</span><span class="s0">;</span>
+        <span class="s1">ArrayList&lt;Integer&gt; adyacensias = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;()</span><span class="s0">;</span>
+        int <span class="s1">w = raiz</span><span class="s0">;</span>
+        <span class="s1">insercion(mat</span><span class="s0">, </span><span class="s1">visitados</span><span class="s0">, </span><span class="s1">w</span><span class="s0">, </span><span class="s1">raiz)</span><span class="s0">;</span>
+
+
+    <span class="s1">}</span>
+
+    <span class="s0">void </span><span class="s1">insercion(String mat[][]</span><span class="s0">, </span><span class="s1">ArrayList&lt;Integer&gt; visitados</span><span class="s0">, int </span><span class="s1">w</span><span class="s0">, int </span><span class="s1">raiz) {</span>
+        <span class="s0">int </span><span class="s1">vk = </span><span class="s2">0</span><span class="s0">;</span>
+        if <span class="s1">(!visitados.contains(w)) {</span>
+            vk = hijoMenor(mat<span class="s0">,</span><span class="s1">w</span><span class="s0">,</span><span class="s1">visitados)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+        <span class="s0">if </span><span class="s1">(vk == </span><span class="s2">0</span><span class="s1">) {</span>
+            agregarVisitados(visitados<span class="s0">, </span><span class="s1">w)</span><span class="s0">;</span>
+            <span class="s1">finalizacion(mat</span><span class="s0">,</span><span class="s1">visitados</span><span class="s0">,</span><span class="s1">w</span><span class="s0">, </span><span class="s1">raiz)</span><span class="s0">;</span>
+
+        <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+            agregarMat(w<span class="s0">, </span><span class="s1">vk)</span><span class="s0">;</span>
+            <span class="s1">w = vk</span><span class="s0">;</span>
+            <span class="s1">insercion(mat</span><span class="s0">, </span><span class="s1">visitados</span><span class="s0">, </span><span class="s1">w</span><span class="s0">, </span><span class="s1">raiz)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+
+
+    }
+
+    <span class="s0">void </span><span class="s1">finalizacion(String mat[][]</span><span class="s0">, </span><span class="s1">ArrayList&lt;Integer&gt; visitados</span><span class="s0">,int </span><span class="s1">w</span><span class="s0">, int </span><span class="s1">raiz) {</span>
+
+        <span class="s0">if </span><span class="s1">(w == raiz) {</span>
+            <span class="s0">return;</span>
+        <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+            regresar(mat<span class="s0">,</span><span class="s1">visitados</span><span class="s0">,</span><span class="s1">w</span><span class="s0">, </span><span class="s1">raiz)</span><span class="s0">;</span>
+
+        <span class="s1">}</span>
+
+    }
+
+    <span class="s0">void </span><span class="s1">regresar(String mat[][]</span><span class="s0">, </span><span class="s1">ArrayList&lt;Integer&gt; visitados</span><span class="s0">,int </span><span class="s1">w</span><span class="s0">, int </span><span class="s1">raiz) {</span>
+        <span class="s0">int </span><span class="s1">x</span><span class="s0">;</span>
+        <span class="s1">x = padre(mat</span><span class="s0">, </span><span class="s1">w)</span><span class="s0">;</span>
+        <span class="s1">w = x</span><span class="s0">;</span>
+        <span class="s1">insercion(mat</span><span class="s0">,</span><span class="s1">visitados</span><span class="s0">,</span><span class="s1">w</span><span class="s0">, </span><span class="s1">raiz)</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+
+    <span class="s0">void </span><span class="s1">anchura(</span><span class="s0">int </span><span class="s1">raiz</span><span class="s0">, </span><span class="s1">String mat[][]) {</span>
+        Queue&lt;Integer&gt; s = <span class="s0">new </span><span class="s1">LinkedList&lt;&gt;()</span><span class="s0">;</span>
+        <span class="s1">arbol = </span><span class="s0">new </span><span class="s1">String[mat.length][mat.length]</span><span class="s0">;</span>
+        <span class="s1">iniciarArbol()</span><span class="s0">;</span>
+        <span class="s1">ArrayList&lt;Integer&gt; visitados = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;()</span><span class="s0">;</span>
+        <span class="s1">ArrayList&lt;Integer&gt; adyacensias = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;()</span><span class="s0">;</span>
+        <span class="s1">s.add(raiz)</span><span class="s0">;</span>
+        <span class="s1">visitados.add(raiz)</span><span class="s0">;</span>
+        while <span class="s1">(!s.isEmpty()) {</span>
+            raiz = s.poll()<span class="s0">;</span>
+
+            <span class="s1">adyacensias = adyacensias(mat</span><span class="s0">, </span><span class="s1">raiz)</span><span class="s0">;</span>
+
+
+            for <span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s2">0</span><span class="s0">; </span><span class="s1">i &lt; adyacensias.size()</span><span class="s0">; </span><span class="s1">i++) {</span>
+                <span class="s0">if </span><span class="s1">(!visitados.contains(adyacensias.get(i)))</span>
+                    agregarMat(raiz<span class="s0">, </span><span class="s1">adyacensias.get(i))</span><span class="s0">;</span>
+
+
+            <span class="s1">}</span>
+
+            sustituirHijos(s<span class="s0">, </span><span class="s1">adyacensias</span><span class="s0">, </span><span class="s1">visitados)</span><span class="s0">;</span>
+            <span class="s1">agregarVisitados(visitados</span><span class="s0">, </span><span class="s1">adyacensias)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+        adyacensias(mat<span class="s0">, </span><span class="s1">raiz)</span><span class="s0">;</span>
+
+
+    <span class="s1">}</span>
+
+    ArrayList&lt;Integer&gt; adyacensias(String mat[][]<span class="s0">, int </span><span class="s1">nodo) {</span>
+        ArrayList&lt;Integer&gt; adyasencias = <span class="s0">new </span><span class="s1">ArrayList&lt;&gt;()</span><span class="s0">;</span>
+        for <span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s2">0</span><span class="s0">; </span><span class="s1">i &lt; mat.length</span><span class="s0">; </span><span class="s1">i++) {</span>
+            <span class="s0">if </span><span class="s1">(mat[nodo][i].equalsIgnoreCase(</span><span class="s3">&quot;1&quot;</span><span class="s1">))</span>
+                adyasencias.add(i)<span class="s0">;</span>
+        <span class="s1">}</span>
+
+        <span class="s0">return </span><span class="s1">adyasencias</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+    <span class="s0">int </span><span class="s1">hijoMenor(String mat[][]</span><span class="s0">, int </span><span class="s1">nodo</span><span class="s0">, </span><span class="s1">ArrayList&lt;Integer&gt; visitados) {</span>
+        ArrayList&lt;Integer&gt; adyasencias = <span class="s0">new </span><span class="s1">ArrayList&lt;&gt;()</span><span class="s0">;</span>
+        int <span class="s1">hijo=</span><span class="s2">0</span><span class="s0">;</span>
+        for <span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s2">0</span><span class="s0">; </span><span class="s1">i &lt; mat.length</span><span class="s0">; </span><span class="s1">i++) {</span>
+            <span class="s0">if </span><span class="s1">(mat[nodo][i].equalsIgnoreCase(</span><span class="s3">&quot;1&quot;</span><span class="s1">) &amp;&amp; !visitados.contains(i)) {</span>
+                <span class="s0">if</span><span class="s1">(nodo&lt;i)</span>
+                adyasencias.add(i)<span class="s0">;</span>
+            <span class="s1">}</span>
+
+        }
+        <span class="s0">if</span><span class="s1">(adyasencias.isEmpty()){</span>
+
+            <span class="s0">return </span><span class="s1">hijo</span><span class="s0">;</span>
+        <span class="s1">}</span><span class="s0">else</span><span class="s1">{</span>
+            <span class="s0">return </span><span class="s1">adyasencias.get(</span><span class="s2">0</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+
+    }
+
+    <span class="s0">int </span><span class="s1">padre(String mat[][]</span><span class="s0">, int </span><span class="s1">nodo) {</span>
+        <span class="s0">boolean </span><span class="s1">b=</span><span class="s0">false;</span>
+        int <span class="s1">padre = </span><span class="s2">0</span><span class="s0">;</span>
+        for <span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s2">0</span><span class="s0">; </span><span class="s1">i &lt; mat.length &amp;&amp; b==</span><span class="s0">false; </span><span class="s1">i++) {</span>
+            <span class="s0">if </span><span class="s1">(mat[nodo][i].equalsIgnoreCase(</span><span class="s3">&quot;1&quot;</span><span class="s1">)) {</span>
+                padre = i<span class="s0">;</span>
+                <span class="s1">b = </span><span class="s0">true;</span>
+            <span class="s1">}</span>
+        }
+
+
+        <span class="s0">return </span><span class="s1">padre</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+    <span class="s0">void </span><span class="s1">agregarMat(</span><span class="s0">int </span><span class="s1">origen</span><span class="s0">, int </span><span class="s1">destino) {</span>
+        arbol[origen][destino] = <span class="s2">1 </span><span class="s1">+ </span><span class="s3">&quot;&quot;</span><span class="s0">;</span>
+        <span class="s1">arbol[destino][origen] = </span><span class="s2">1 </span><span class="s1">+ </span><span class="s3">&quot;&quot;</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+    <span class="s0">void </span><span class="s1">sustituirHijos(Queue cola</span><span class="s0">, </span><span class="s1">ArrayList&lt;Integer&gt; hijos</span><span class="s0">, </span><span class="s1">ArrayList&lt;Integer&gt; visitados) {</span>
+        <span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s2">0</span><span class="s0">; </span><span class="s1">i &lt; hijos.size()</span><span class="s0">; </span><span class="s1">i++) {</span>
+            <span class="s0">if </span><span class="s1">(!visitados.contains(hijos.get(i)))</span>
+                cola.add(hijos.get(i))<span class="s0">;</span>
+        <span class="s1">}</span>
+
+    }
+
+    <span class="s0">void </span><span class="s1">agregarVisitados(ArrayList&lt;Integer&gt; visitados</span><span class="s0">, </span><span class="s1">ArrayList&lt;Integer&gt; adyasencias) {</span>
+
+        <span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s2">0</span><span class="s0">; </span><span class="s1">i &lt; adyasencias.size()</span><span class="s0">; </span><span class="s1">i++) {</span>
+            <span class="s0">if </span><span class="s1">(!visitados.contains(adyasencias.get(i)))</span>
+                visitados.add(adyasencias.get(i))<span class="s0">;</span>
+        <span class="s1">}</span>
+    }
+
+    <span class="s0">void </span><span class="s1">agregarVisitados(ArrayList&lt;Integer&gt; visitados</span><span class="s0">, int </span><span class="s1">hijo) {</span>
+
+
+        <span class="s0">if </span><span class="s1">(!visitados.contains(hijo))</span>
+            visitados.add(hijo)<span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+    <span class="s0">void </span><span class="s1">iniciarArbol() {</span>
+        <span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s2">0</span><span class="s0">; </span><span class="s1">i &lt; arbol.length</span><span class="s0">; </span><span class="s1">i++) {</span>
+            <span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">j = </span><span class="s2">0</span><span class="s0">; </span><span class="s1">j &lt; arbol.length</span><span class="s0">; </span><span class="s1">j++) {</span>
+                arbol[i][j] = <span class="s3">&quot;0&quot;</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        }
+    }
+
+    <span class="s0">void </span><span class="s1">imprimirArbol() {</span>
+        Alert alert = <span class="s0">new </span><span class="s1">Alert(Alert.AlertType.INFORMATION)</span><span class="s0">;</span>
+        <span class="s1">alert.setTitle(</span><span class="s3">&quot;Matriz adyacencia&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">String alert1 = </span><span class="s3">&quot;&quot;</span><span class="s0">;</span>
+        for <span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s2">0</span><span class="s0">; </span><span class="s1">i &lt; arbol.length</span><span class="s0">; </span><span class="s1">i++) {</span>
+            <span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">j = </span><span class="s2">0</span><span class="s0">; </span><span class="s1">j &lt; arbol.length</span><span class="s0">; </span><span class="s1">j++) {</span>
+                System.out.print(arbol[i][j] + <span class="s3">&quot; &quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">alert1 += arbol[i][j] + </span><span class="s3">&quot; &quot;</span><span class="s0">;</span>
+            <span class="s1">}</span>
+            System.out.println()<span class="s0">;</span>
+            <span class="s1">alert1 += </span><span class="s3">&quot;</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+        <span class="s1">}</span>
+        alert.setContentText(alert1)<span class="s0">;</span>
+
+        <span class="s1">alert.show()</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+    @Override
+    <span class="s0">public </span><span class="s1">String toString() {</span>
+        <span class="s0">return </span><span class="s3">&quot;busqueda{&quot; </span><span class="s1">+</span>
+                <span class="s3">&quot;arbol=&quot; </span><span class="s1">+ Arrays.toString(arbol) +</span>
+                <span class="s3">'}'</span><span class="s0">;</span>
+    <span class="s1">}</span>
+}
+
+</pre>
+</body>
+</html>

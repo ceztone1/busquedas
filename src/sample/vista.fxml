@@ -10,10 +10,16 @@
     <center>
         <VBox alignment="CENTER" spacing="5">
             <Button fx:id="btnLF" text="Load File" />
-         <TextField fx:id="txtRaiz" alignment="CENTER" promptText="Ingresa Raiz" />
+         <HBox prefHeight="56.0" prefWidth="290.0">
+            <children>
+               <TextField fx:id="txtRaiz" alignment="CENTER" promptText="Ingresa Raiz" />
+               <TextField fx:id="txtObjetivo" promptText="Ingrese objetivo" />
+            </children>
+         </HBox>
             <HBox alignment="CENTER" spacing="5">
             <Button fx:id="btnAnchura" text="Anchura" />
             <Button fx:id="btnProfundidad" text="Profundidad" />
+            <Button fx:id="btnCoste" mnemonicParsing="false" text="Menor coste" />
             </HBox>
             <HBox alignment="CENTER" spacing="5">
                 <VBox alignment="CENTER" spacing="5" />

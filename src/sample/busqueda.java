@@ -8,6 +8,73 @@ public class busqueda {
 
     String[][] arbol;
 
+
+    void coste_uniforme(nodo raiz, String solucion, String mat[][]) {
+        List<nodo> aux = new ArrayList<>();
+        nodo nodo_incial = raiz;
+        nodo nodo_actual;
+        nodo nodo_hijo;
+        ArrayList<nodo> nodos_frontera = new ArrayList<>();
+        List<nodo> adyasencias = new ArrayList<>();
+        ArrayList<String> nodos_visitados = new ArrayList<>();
+        nodos_frontera.add(nodo_incial);
+        int costo = 0;
+        while (!nodos_frontera.isEmpty()) {
+            ordenar(nodos_frontera);
+            nodo_actual = nodos_frontera.get(0);
+            costo = nodo_actual.getCoste();
+            nodos_frontera.remove(0);
+            if (nodo_actual.info.equals(solucion)) {
+                System.out.println("Encontrado");
+                System.out.println(nodo_actual.getCoste());
+                camino(nodo_actual);
+                return;
+            }
+            nodos_visitados.add(nodo_actual.getInfo());
+            adyasencias = adyacensiasCoste(mat, nodo_actual, nodos_visitados);
+            for (int i = 0; i < adyasencias.size(); i++) {
+                nodo_hijo = adyasencias.get(i);
+                nodo_hijo.setCoste(nodo_hijo.getCoste() + costo);
+                if (!nodos_visitados.contains(nodo_hijo))
+                    if (nodos_frontera.contains(nodo_hijo))
+                        menorCoste(nodos_frontera, nodo_hijo);
+                    else
+                        nodos_frontera.add(nodo_hijo);
+            }
+
+        }
+        System.out.println("No encontrado");
+    }
+
+    void camino(nodo nod) {
+
+    }
+
+    void menorCoste(ArrayList<nodo> frontera, nodo nodo) {
+        boolean b = true;
+        for (int i = 0; i < frontera.size() && b == true; i++) {
+            if (frontera.get(i).getCoste() < nodo.getCoste()) {
+                frontera.get(i).setInfo(nodo.info);
+                frontera.get(i).setCoste(nodo.coste);
+                b = false;
+            }
+
+            ordenar(frontera);
+
+        }
+
+    }
+
+    void ordenar(ArrayList<nodo> list) {
+        Collections.sort(list, new Comparator<nodo>() {
+            @Override
+            public int compare(nodo p1, nodo p2) {
+                return new Integer(p1.getCoste()).compareTo(new Integer(p2.getCoste()));
+            }
+        });
+    }
+
+
     void profundidad(int raiz, String mat[][]) {
         ArrayList<Integer> visitados = new ArrayList<>();
         arbol = new String[mat.length][mat.length];
@@ -21,15 +88,14 @@ public class busqueda {
 
     void insercion(String mat[][], ArrayList<Integer> visitados, int w, int raiz) {
         int vk = 0;
-        if (!visitados.contains(w)) {
-            vk = hijoMenor(mat,w,visitados);
-        }
-        if (vk == 0) {
-            agregarVisitados(visitados, w);
-            finalizacion(mat,visitados,w, raiz);
+        agregarVisitados(visitados, w);
+        vk = hijoMenor(mat, w, visitados);
+
+        if (vk == -1) {
+            finalizacion(mat, visitados, w, raiz);
 
         } else {
-            agregarMat(w, vk);
+            agregarMatProf(w, vk);
             w = vk;
             insercion(mat, visitados, w, raiz);
         }
@@ -37,22 +103,24 @@ public class busqueda {
 
     }
 
-    void finalizacion(String mat[][], ArrayList<Integer> visitados,int w, int raiz) {
+    void finalizacion(String mat[][], ArrayList<Integer> visitados, int w, int raiz) {
 
         if (w == raiz) {
+            mostrarMatrizProfFinal(mat);
             return;
+
         } else {
-            regresar(mat,visitados,w, raiz);
+            regresar(mat, visitados, w, raiz);
 
         }
 
     }
 
-    void regresar(String mat[][], ArrayList<Integer> visitados,int w, int raiz) {
+    void regresar(String mat[][], ArrayList<Integer> visitados, int w, int raiz) {
         int x;
-        x = padre(mat, w);
+        x = padre(arbol, w);
         w = x;
-        insercion(mat,visitados,w, raiz);
+        insercion(mat, visitados, w, raiz);
 
     }
 
@@ -75,7 +143,6 @@ public class busqueda {
                 if (!visitados.contains(adyacensias.get(i)))
                     agregarMat(raiz, adyacensias.get(i));
 
-
             }
 
             sustituirHijos(s, adyacensias, visitados);
@@ -97,30 +164,52 @@ public class busqueda {
 
     }
 
+    ArrayList<nodo> adyacensiasCoste(String mat[][], nodo nodo, ArrayList<String> visitados) {
+        ArrayList<nodo> adyasencias = new ArrayList<>();
+        int aux;
+
+        for (int i = 0; i < mat.length; i++) {
+            if (mat[i][0].equalsIgnoreCase(nodo.info)) {
+                aux = i;
+                for (int j = 1; j < mat.length; j++) {
+                    if (!mat[aux][j].equalsIgnoreCase("0")) {
+                        if (!visitados.contains(mat[0][j] + ""))
+                            adyasencias.add(new nodo(Integer.parseInt(mat[aux][j]), mat[0][j] + ""));
+                    }
+                }
+            }
+
+        }
+
+
+        return adyasencias;
+
+    }
+
+
     int hijoMenor(String mat[][], int nodo, ArrayList<Integer> visitados) {
         ArrayList<Integer> adyasencias = new ArrayList<>();
-        int hijo=0;
+        int hijo = -1;
         for (int i = 0; i < mat.length; i++) {
             if (mat[nodo][i].equalsIgnoreCase("1") && !visitados.contains(i)) {
-                if(nodo<i)
                 adyasencias.add(i);
             }
 
         }
-        if(adyasencias.isEmpty()){
+        if (adyasencias.isEmpty()) {
 
             return hijo;
-        }else{
+        } else {
             return adyasencias.get(0);
         }
 
     }
 
     int padre(String mat[][], int nodo) {
-        boolean b=false;
+        boolean b = false;
         int padre = 0;
-        for (int i = 0; i < mat.length && b==false; i++) {
-            if (mat[nodo][i].equalsIgnoreCase("1")) {
+        for (int i = 0; i < mat.length && b == false; i++) {
+            if (mat[i][nodo].equalsIgnoreCase("1")) {
                 padre = i;
                 b = true;
             }
@@ -135,6 +224,24 @@ public class busqueda {
         arbol[origen][destino] = 1 + "";
         arbol[destino][origen] = 1 + "";
 
+    }
+
+    void agregarMatProf(int origen, int destino) {
+        arbol[origen][destino] = 1 + "";
+
+
+    }
+
+    void mostrarMatrizProfFinal(String[][] mat) {
+        for (int i = 0; i < mat.length; i++) {
+            for (int j = 0; j < mat.length; j++) {
+                if (arbol[i][j].equals("1")) {
+                    arbol[j][i] = mat[i][j];
+                    arbol[j][i] = mat[i][j];
+
+                }
+            }
+        }
     }
 
     void sustituirHijos(Queue cola, ArrayList<Integer> hijos, ArrayList<Integer> visitados) {

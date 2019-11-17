@@ -18,11 +18,11 @@ import java.util.ResourceBundle;
 
 public class vistaController implements Initializable {
     @FXML
-    Button btnLF, btnAnchura, btnProfundidad;
+    Button btnLF, btnAnchura, btnProfundidad,btnCoste;
     @FXML
-    TextField txtRaiz;
-
+    TextField txtRaiz,txtObjetivo;
     String matriz[][];
+    busqueda busqueda = new busqueda();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -30,18 +30,23 @@ public class vistaController implements Initializable {
     }
 
     void inicio() {
-        btnProfundidad.setOnAction(x->{
-            busqueda busqueda = new busqueda();
+        btnCoste.setOnAction(x->{
+            if (!txtRaiz.getText().equalsIgnoreCase("")){
+                busqueda.coste_uniforme(new nodo(0,txtRaiz.getText()),txtObjetivo.getText(),matriz);
+            }
+        });
+        btnProfundidad.setOnAction(x -> {
+
             if (!txtRaiz.getText().equalsIgnoreCase(""))
                 busqueda.profundidad(Integer.parseInt(txtRaiz.getText()), matriz);
             busqueda.imprimirArbol();
         });
         btnAnchura.setOnAction(x ->
         {
-            busqueda busqueda = new busqueda();
+
             if (!txtRaiz.getText().equalsIgnoreCase(""))
                 busqueda.anchura(Integer.parseInt(txtRaiz.getText()), matriz);
-                busqueda.imprimirArbol();
+            busqueda.imprimirArbol();
 
         });
         btnLF.setOnAction(x -> {
